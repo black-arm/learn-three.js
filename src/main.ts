@@ -11,8 +11,13 @@ const geometry = new THREE.BoxGeometry(1, 1, 1);
 const material = new THREE.MeshNormalMaterial(); //definisce i colori in maniera casuale
 
 const mesh = new THREE.Mesh(geometry, material);
+const axes = new THREE.AxesHelper(3);
+mesh.add(axes.clone());
+
 const mesh2 = mesh.clone();
 const mesh3 = mesh.clone();
+
+
 
 scene.add(mesh);
 scene.add(mesh2);
@@ -39,12 +44,18 @@ document.body.appendChild(renderer.domElement)
 
 renderer.render(scene, camera);
 camera.position.z = 3;
+mesh.rotation.y += Math.PI * 0.25;
 
 function animate(){
-  mesh.rotation.y += 0.01;
-  mesh2.rotation.x += 0.03;
-  mesh2.rotation.y += 0.01;
-  mesh3.rotation.y += 0.02
+  //mesh.rotation.y += Math.PI * 0.25;
+  mesh2.rotation.x += 0.01;
+  mesh2.rotation.y += 0.02;
+  mesh2.rotation.order = 'YXZ'
+  mesh3.rotation.z += 0.01;
+  // mesh.rotation.y += 0.01;
+  // mesh2.rotation.x += 0.03;
+  // mesh2.rotation.y += 0.01;
+  // mesh3.rotation.y += 0.02
   //mesh.rotation.y += 0.01;
   renderer.render(scene, camera);
   requestAnimationFrame(animate)
