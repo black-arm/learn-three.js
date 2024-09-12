@@ -33,14 +33,16 @@ mesh3.scale.multiplyScalar(0.5);
 mesh.scale.multiplyScalar(0);
 mesh3.scale.y = 2;
 
-const temp = {
-  width: 1024,
-  height: window.innerHeight
+const sizes = {
+  width: window.innerWidth, //larghezza viewport
+  height: window.innerHeight // altezza viewport
 }
 
-const camera = new THREE.PerspectiveCamera(75, temp.width / temp.height, 0.1, 10);
+const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 10);
 const renderer = new THREE.WebGLRenderer()
-renderer.setSize(temp.width, temp.height);
+const pixelRatio = Math.min(window.devicePixelRatio, 2);
+renderer.setPixelRatio(pixelRatio)
+renderer.setSize(sizes.width, sizes.height);
 
 document.body.appendChild(renderer.domElement)
 
@@ -62,7 +64,7 @@ function animate(){
   //const currentTime = Date.now();
   //const deltaTime = (currentTime - time)/ 1000;
   const deltaTime = clock.getDelta(); //fa la stessa cosa di currentime e time
-  console.log(deltaTime)
+  //console.log(deltaTime)
   //time = currentTime;
   const time = clock.getElapsedTime();
   //per far spostare un oggetto sull'asse delle Y basta usare le funzioni matematiche Math.sin;
@@ -75,7 +77,7 @@ function animate(){
   mesh3.rotation.y += 0.02
   //mesh.rotation.y += 0.01;
 
-  camera.lookAt(mesh.position);
+  //camera.lookAt(mesh.position);
   renderer.render(scene, camera);
   requestAnimationFrame(animate)
 }
@@ -87,3 +89,27 @@ function pop(){
 }
 
 pop();
+
+
+window.addEventListener('resize', onResize)
+
+//permette di rendere la viewport responsive
+function onResize() {
+  sizes.height = window.innerHeight;
+  sizes.width = window.innerWidth;
+
+  camera.aspect = sizes.width / sizes.height;
+
+  //  aggiornamento della matrice di proiezione.
+  // Deve essere chiamato dopo qualsiasi cambio di parametro
+  //la matrice di proiezione viene utilizzata dalla GPU per indicare 
+  //i punti in cui devono essere visualizzati gli oggetti
+  camera.updateProjectionMatrix();  
+  
+  const pixelRatio = Math.min(window.devicePixelRatio, 2);
+  renderer.setPixelRatio(pixelRatio)
+
+  renderer.setSize(sizes.width, sizes.height)
+}
+
+console.log(window.devicePixelRatio);
