@@ -16,5 +16,8 @@
   },
   "exports": {
     "./addons/*": "./examples/jsm/*"
+  },
+  "dependencies": {
+    "gsap": "^3.12.5"
   }
 }

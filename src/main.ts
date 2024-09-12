@@ -1,5 +1,6 @@
 import './style.css'
 import * as THREE from 'three'
+import gsap from 'gsap';
 
 const scene = new THREE.Scene();
 
@@ -29,6 +30,7 @@ mesh.position.add(new THREE.Vector3(1, 0.5, 0));
 mesh3.position.set(-2, 1.5, -3);
 //mesh3.scale.set(0.5, 0.5, 0.5);
 mesh3.scale.multiplyScalar(0.5);
+mesh.scale.multiplyScalar(0);
 mesh3.scale.y = 2;
 
 const temp = {
@@ -46,19 +48,42 @@ renderer.render(scene, camera);
 camera.position.z = 3;
 mesh.rotation.y += Math.PI * 0.25;
 
+/*
+  algoritmo per definire il tempo di rotazione 
+  indipendentemente dalla frequenza del frame in modo costante
+*/
+//let time = Date.now();
+const vel = 2;
+
+const clock = new THREE.Clock();
+
 function animate(){
-  //mesh.rotation.y += Math.PI * 0.25;
-  mesh2.rotation.x += 0.01;
-  mesh2.rotation.y += 0.02;
-  mesh2.rotation.order = 'YXZ'
-  mesh3.rotation.z += 0.01;
-  // mesh.rotation.y += 0.01;
-  // mesh2.rotation.x += 0.03;
-  // mesh2.rotation.y += 0.01;
-  // mesh3.rotation.y += 0.02
+
+  //const currentTime = Date.now();
+  //const deltaTime = (currentTime - time)/ 1000;
+  const deltaTime = clock.getDelta(); //fa la stessa cosa di currentime e time
+  console.log(deltaTime)
+  //time = currentTime;
+  const time = clock.getElapsedTime();
+  //per far spostare un oggetto sull'asse delle Y basta usare le funzioni matematiche Math.sin;
+  mesh.rotation.y += vel * deltaTime;
+  //mesh.position.y = Math.cos(time) * vel;
+  //mesh.position.x = Math.cos(time) * vel;
+  mesh.position.y = Math.sin(time);
+  mesh2.rotation.x += 0.03;
+  mesh2.rotation.y += 0.01;
+  mesh3.rotation.y += 0.02
   //mesh.rotation.y += 0.01;
+
+  camera.lookAt(mesh.position);
   renderer.render(scene, camera);
   requestAnimationFrame(animate)
 }
 
 requestAnimationFrame(animate)
+
+function pop(){
+  gsap.to(mesh.scale, { duration: 2, x: 1, y: 1, z: 1})
+}
+
+pop();
